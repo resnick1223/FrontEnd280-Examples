@@ -2,7 +2,7 @@
 var storage = new EasyWebStorage("sticky", "localStorage");
 
 $(function () {
-    storage.keyTable.forEach(function (key) {
+    storage.keys.forEach(function (key) {
         var sticky = storage.get(key);
         addStickyToList(sticky);
     });

@@ -1,9 +1,8 @@
 
-function EasyWebStorage(namespace, providerType) {
-    this.namespace = namespace;
+function EasyWebStorage(appName, providerType) {
+    this.appName = appName;
     this.providerType = providerType;
-    this.keyTableName = this.namespace + "KeyTable";
-    this.keyTable = [];
+    this.keysName = this.appName + "-keys";
     this.init();
 }
 
@@ -19,12 +18,12 @@ EasyWebStorage.prototype.init = function () {
 };
 
 EasyWebStorage.prototype.initLocalStorage = function () {
-    this.keyTable = localStorage[this.keyTableName];
-    if (!this.keyTable) {
-        this.keyTable = [];
-        localStorage[this.keyTableName] = JSON.stringify(this.keyTable);
+    this.keys = localStorage[this.keysName];
+    if (!this.keys) {
+        this.keys = [];
+        localStorage[this.keysName] = JSON.stringify(this.keys);
     } else {
-        this.keyTable = JSON.parse(this.keyTable);
+        this.keys = JSON.parse(this.keys);
     }
 };
 
@@ -32,16 +31,16 @@ EasyWebStorage.prototype.get = function (key) {
     return JSON.parse(localStorage[key]);
 };
 
-EasyWebStorage.prototype.updateKeyTable = function () {
-    this.update(this.keyTableName, this.keyTable);
+EasyWebStorage.prototype.updateKeys = function () {
+    this.update(this.keysName, this.keys);
 };
 
 
 EasyWebStorage.prototype.insert = function (data) {
 
-    var key = this.namespace + "_" + (new Date()).getTime();
-    this.keyTable.push(key);
-    this.updateKeyTable();
+    var key = this.appName + "_" + (new Date()).getTime();
+    this.keys.push(key);
+    this.updateKeys();
     data._id = key;
     localStorage.setItem(key, JSON.stringify(data));
     return data;
@@ -55,23 +54,23 @@ EasyWebStorage.prototype.update = function (key, data) {
 
 EasyWebStorage.prototype.delete = function (key) {
 
-    if (this.keyTable) {
-        for (var index = 0; index < this.keyTable.length; index++) {
-            if (key === this.keyTable[index]) {
-                this.keyTable.splice(index, 1);
+    if (this.keys) {
+        for (var index = 0; index < this.keys.length; index++) {
+            if (key === this.keys[index]) {
+                this.keys.splice(index, 1);
             }
         }
         localStorage.removeItem(key);
-        this.updateKeyTable();
+        this.updateKeys();
     }
 };
 
 EasyWebStorage.prototype.clearAll = function () {
 
-    this.keyTable.forEach(function (key) {
+    this.keys.forEach(function (key) {
         localStorage.removeItem(key);
     });
-    this.keyTable = [];
-    this.updateKeyTable();
+    this.keys = [];
+    this.updateKeys();
 
 };
